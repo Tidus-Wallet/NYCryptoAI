@@ -2,13 +2,13 @@ import { createOpenAI } from '@ai-sdk/openai'
 import { convertToCoreMessages, generateText, Message } from 'ai'
 import { Connection, Keypair } from '@solana/web3.js'
 import base58 from 'bs58'
-import { getOnChainTools } from '@goat-sdk/adapter-vercel-ai'
-import { solana, sendSOL } from '@goat-sdk/wallet-solana'
-import { splToken } from '@goat-sdk/plugin-spl-token'
-import { jupiter } from '@goat-sdk/plugin-jupiter'
-import { coingecko } from '@goat-sdk/plugin-coingecko'
+import { getOnChainTools } from '@nycrypto/goat-adapter-vercel-ai'
+import { solana, sendSOL } from '@nycrypto/goat-wallet-solana-yuna'
+import { splToken } from '@nycrypto/goat-plugin-spl-token'
+import { jupiter } from '@nycrypto/goat-plugin-jupiter'
+import { coingecko } from '@nycrypto/goat-plugin-coingecko'
+import { yuna } from '@nycrypto/goat-plugin-yuna'
 import storage from 'utils/storage'
-import { yuna } from 'plugins/yuna'
 
 export async function ask(messages: Message[]) {
   try {
@@ -25,13 +25,14 @@ export async function ask(messages: Message[]) {
       wallet: solana({
         keypair,
         connection,
+        yunaAPIKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string,
       }),
       plugins: [
         sendSOL(),
         splToken(),
         jupiter(),
         yuna({
-          apiKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string
+          apiKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string,
         }),
         coingecko({
           apiKey: process.env.EXPO_PUBLIC_COINGECKO_API_KEY as string,
@@ -41,7 +42,7 @@ export async function ask(messages: Message[]) {
 
     const openai = createOpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY })
     const result = await generateText({
-      model: openai('gpt-4o-mini'),
+      model: openai('gpt-4o'),
       messages: convertToCoreMessages(messages),
       system: `You are an AI assistant for a crypto wallet, capable of helping users manage their digital assets and perform on-chain transactions. You have access to blockchain data and can execute transactions through secure APIs. Your primary functions include checking balances, sending tokens, swapping tokens, and performing other blockchain operations.
 
@@ -50,6 +51,7 @@ export async function ask(messages: Message[]) {
       - You can check token balances across different chains and tokens
       - When showing balances, always display:
         - Token amount with appropriate decimals
+        - Token mint address
         - Current USD value (if available)
         - Chain/network the tokens are on
       - Format large numbers with appropriate separators for readability
@@ -119,6 +121,8 @@ export async function ask(messages: Message[]) {
       Here are some rules for you to follow:
       - As a security measure, please confirm the transaction details before proceeding.
       - You only use ### headers for section titles, nothing else.
+      - whenever the user asks for their balance get them their balance using yuna.
+      - whenever returning the balance of a token, always include the token's addres for future reference purposes.
 
       `,
       tools,

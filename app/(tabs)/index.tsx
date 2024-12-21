@@ -2,7 +2,7 @@ import { useChat } from 'hooks/useChat'
 import { ScrollView, Platform, KeyboardAvoidingView } from 'react-native'
 import { useRef, useEffect } from 'react'
 import Message from 'components/Message'
-import { YStack, XStack, Text, Input } from 'tamagui'
+import { YStack, XStack, Text, Input, Button } from 'tamagui'
 
 export default function App() {
   const { messages, error, handleInputChange, input, handleSubmit } = useChat()
@@ -61,6 +61,9 @@ export default function App() {
               e.preventDefault()
             }}
           />
+          <Button onPress={() => handleSubmit()} ml="$2">
+            Send
+          </Button>
         </XStack>
       </YStack>
     </KeyboardAvoidingView>

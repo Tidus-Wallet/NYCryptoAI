@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Message } from 'ai'
 import { ask } from 'functions/ai'
 import QuickCrypto from 'react-native-quick-crypto'
@@ -12,7 +12,7 @@ interface UseChatResult {
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
-  handleSubmit: (e: React.FormEvent) => Promise<void>
+  handleSubmit: (e?: React.FormEvent) => Promise<void>
 }
 
 export function useChat(): UseChatResult {
@@ -28,8 +28,8 @@ export function useChat(): UseChatResult {
   )
 
   const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault()
+    async (e?: React.FormEvent) => {
+      e?.preventDefault()
 
       if (!input.trim()) return
 
@@ -38,6 +38,11 @@ export function useChat(): UseChatResult {
         role: 'user',
         content: input,
         id: QuickCrypto.randomUUID(),
+      }
+
+      // delete old messages if more than 50
+      if (messages.length > 50) {
+        setMessages((prevMessages) => prevMessages.slice(1))
       }
 
       setMessages((prevMessages) => [...prevMessages, userMessage])
