@@ -1,5 +1,5 @@
 import { useToastController } from '@tamagui/toast'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 import { Clipboard } from 'react-native'
 import { Paragraph, Text, YStack, H4, Anchor } from 'tamagui'
 

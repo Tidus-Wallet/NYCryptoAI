@@ -1,5 +1,5 @@
 {
-  "name": "aiwallet",
+  "name": "nycryptoai",
   "main": "./index",
   "version": "1.0.0",
   "packageManager": "yarn@4.5.0",

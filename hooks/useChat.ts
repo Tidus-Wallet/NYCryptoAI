@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Message } from 'ai'
+import type { Message } from 'ai'
 import { ask } from 'functions/ai'
 import QuickCrypto from 'react-native-quick-crypto'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
