@@ -23,3 +23,13 @@ NYCryptoAI right now only has a handful of features:
 - [ ] Liquidity position creation and closing through meteora
 - [ ] NFT portfolio fetching and display
 - [ ] Plain old wallet dashboard where these can be performed using a simple UI like [Tidus Wallet](https://tiduswallet.com)
+
+## Running the project
+
+In order to run the run the project follow these steps:
+
+1. Clone the repo `git clone https://github.com/tidus-wallet/nycryptoai.git`
+2. Install the packages `bun install`
+3. Install the pods `cd ios && pod install`
+4. Copy the `.env.example` file to `.env` and fill in the required fields `cp .env.example .env`
+5. Run the project `bun ios` or `bun android`
