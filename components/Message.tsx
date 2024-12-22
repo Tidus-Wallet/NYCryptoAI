@@ -180,10 +180,20 @@ const Message = ({ role, content }: { role: string; content: string }) => {
   }, [content, processLine, renderSegment, handleCopy])
 
   return (
-    <YStack gap="$2" my="$2">
-      <Text fontWeight="bold" color={role === 'user' ? '$blue10' : '$color'}>
+    <YStack
+      gap="$2"
+      my="$2"
+      backgroundColor={role === 'user' ? '$background' : '$accentBackground'}
+      p="$4"
+      br="$6"
+      borderTopLeftRadius={role === 'user' ? '$6' : '$1'}
+      borderTopRightRadius={role === 'user' ? '$1' : '$6'}
+      maxWidth={'80%'}
+      alignSelf={role === 'user' ? 'flex-end' : 'flex-start'}
+    >
+      {/* <Text fontWeight="bold" color={role === 'user' ? '$blue10' : '$color'}>
         {role === 'user' ? 'You' : 'Wallet'}
-      </Text>
+      </Text> */}
       {renderedContent}
     </YStack>
   )

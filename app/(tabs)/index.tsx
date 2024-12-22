@@ -3,9 +3,10 @@ import { ScrollView, Platform, KeyboardAvoidingView } from 'react-native'
 import { useRef, useEffect } from 'react'
 import Message from 'components/Message'
 import { YStack, XStack, Text, Input, Button } from 'tamagui'
+import WorkingIndicator from 'components/WorkingIndicator'
 
 export default function App() {
-  const { messages, error, handleInputChange, input, handleSubmit } = useChat()
+  const { isLoading, messages, error, handleInputChange, input, handleSubmit } = useChat()
   const scrollViewRef = useRef<ScrollView>(null)
 
   useEffect(() => {
@@ -20,7 +21,6 @@ export default function App() {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 20}
-      // flex={1}
     >
       <YStack px="$3" height={'100%'}>
         <ScrollView
@@ -32,14 +32,10 @@ export default function App() {
           {messages.map((m) => (
             <Message key={m.id} role={m.role} content={m.content.toString()} />
           ))}
+          {isLoading && <WorkingIndicator />}
         </ScrollView>
 
-        <XStack
-          position="fixed"
-          bottom={0}
-          borderRadius="$4"
-          pb={Platform.OS === 'ios' ? '$5' : '$3'}
-        >
+        <XStack position="fixed" bottom={0} borderRadius="$4" py="$2" alignItems="center">
           <Input
             multiline
             flex={1}
@@ -61,7 +57,13 @@ export default function App() {
               e.preventDefault()
             }}
           />
-          <Button onPress={() => handleSubmit()} ml="$2">
+          <Button
+            onPress={() => handleSubmit()}
+            ml="$2"
+            backgroundColor={'$blue10'}
+            color={'white'}
+            height={'100%'}
+          >
             Send
           </Button>
         </XStack>
