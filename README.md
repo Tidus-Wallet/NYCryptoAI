@@ -15,6 +15,7 @@ NYCryptoAI right now only has a handful of features:
 - [x] Wallet transaction history fetching
 - [x] Trending tokens information
 - [x] Token prices and price change information
+- [ ] Generative UI for certain responses
 - [ ] Wallet portfolio breakdown
   - How much a user is up or down given a period of time
   - What tokens have performed the best and which are under performing
