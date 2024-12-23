@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react'
 import Message from 'components/Message'
 import { YStack, XStack, Text, Input, Button } from 'tamagui'
 import WorkingIndicator from 'components/WorkingIndicator'
+import Response from 'components/Responses'
 
 export default function App() {
   const { isLoading, messages, error, handleInputChange, input, handleSubmit } = useChat()
@@ -30,7 +31,13 @@ export default function App() {
           }}
         >
           {messages.map((m) => (
-            <Message key={m.id} role={m.role} content={m.content.toString()} />
+            <Response key={m.id} {...m} />
+            // <Message
+            //   key={m.id}
+            //   role={m.role}
+            //   content={m.content.toString()}
+            //   textResults={m.toolResults}
+            // />
           ))}
           {isLoading && <WorkingIndicator />}
         </ScrollView>

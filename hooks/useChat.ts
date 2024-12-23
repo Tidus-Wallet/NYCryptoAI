@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from 'react'
-import type { Message } from 'ai'
+import type { Message, ToolContent } from 'ai'
 import { ask } from 'functions/ai'
 import QuickCrypto from 'react-native-quick-crypto'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import storage from 'utils/storage'
 
+export type CustomMessage = Message & { toolResults?: ToolContent }
+
 interface UseChatResult {
-  messages: Message[]
+  messages: CustomMessage[]
   error: Error | null
   input: string
   isLoading: boolean
@@ -17,7 +19,7 @@ interface UseChatResult {
 }
 
 export function useChat(): UseChatResult {
-  const [messages, setMessages] = useMMKVStorage<Message[]>('messages', storage, [])
+  const [messages, setMessages] = useMMKVStorage<CustomMessage[]>('messages', storage, [])
   const [error, setError] = useState<Error | null>(null)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -54,10 +56,11 @@ export function useChat(): UseChatResult {
       try {
         const response = await ask([...messages, userMessage])
 
-        const assistantMessage: Message = {
+        const assistantMessage = {
           role: 'assistant',
-          content: response,
+          content: response.text,
           id: QuickCrypto.randomUUID(),
+          toolResults: response.toolResult,
         }
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage])
