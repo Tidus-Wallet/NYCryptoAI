@@ -34,3 +34,7 @@ In order to run the run the project follow these steps:
 3. Install the pods `cd ios && pod install`
 4. Copy the `.env.example` file to `.env` and fill in the required fields `cp .env.example .env`
 5. Run the project `bun ios` or `bun android`
+
+## Running the app (android)
+
+To run the app all you need to do is download the APK file [here](./app-apk.zip)
