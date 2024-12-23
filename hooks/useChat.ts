@@ -7,18 +7,18 @@ import storage from 'utils/storage'
 
 export type CustomMessage = Message & { toolResults?: ToolContent }
 
-interface UseChatResult {
-  messages: CustomMessage[]
-  error: Error | null
-  input: string
-  isLoading: boolean
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void
-  handleSubmit: (e?: React.FormEvent) => Promise<void>
-}
+// interface UseChatResult {
+//   messages: CustomMessage[]
+//   error: Error | null
+//   input: string
+//   isLoading: boolean
+//   handleInputChange: (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => void
+//   handleSubmit: (e?: React.FormEvent) => Promise<void>
+// }
 
-export function useChat(): UseChatResult {
+export function useChat() {
   const [messages, setMessages] = useMMKVStorage<CustomMessage[]>('messages', storage, [])
   const [error, setError] = useState<Error | null>(null)
   const [input, setInput] = useState('')
@@ -80,5 +80,6 @@ export function useChat(): UseChatResult {
     isLoading,
     handleInputChange,
     handleSubmit,
+    setInput,
   }
 }

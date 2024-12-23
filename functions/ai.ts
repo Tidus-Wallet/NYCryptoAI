@@ -47,10 +47,14 @@ export async function ask(messages: Message[]) {
     const anthropic = createAnthropic({
       apiKey: process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY,
     })
+    const openai = createOpenAI({
+      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    })
 
     const result = await generateText({
-      model: anthropic('claude-3-5-sonnet-latest'),
-      messages: convertToCoreMessages(messages.slice(-10, messages.length)),
+      // model: anthropic('claude-3-5-sonnet-latest'),
+      model: openai('gpt-4o'),
+      messages: convertToCoreMessages(messages),
       temperature: 0.4,
       system: `You are an AI assistant built by NYCrypto for a crypto wallet, capable of helping users manage their digital assets and perform on-chain transactions. You have access to blockchain data and can execute transactions through secure APIs. Your primary functions include checking balances, sending tokens, swapping tokens, and performing other blockchain operations.
 

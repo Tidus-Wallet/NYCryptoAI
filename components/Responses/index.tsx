@@ -1,10 +1,10 @@
 import Message from 'components/Message'
 import type { CustomMessage } from 'hooks/useChat'
-import { Text } from 'tamagui'
 import GetBalanceCard from './GetBalanceCard'
-import GetTransactionHistory from './GetTransactionHistory'
+import { memo } from 'react'
+import GetQuoteCard from './GetQuoteCard'
 
-export default function Response(message: CustomMessage) {
+function Response(message: CustomMessage) {
   return (
     <>
       {message.toolResults ? (
@@ -14,8 +14,8 @@ export default function Response(message: CustomMessage) {
               return <GetBalanceCard {...v} />
             // case 'getTransactionHistory':
             //   return <GetTransactionHistory {...v} />
-            // case 'get_quote':
-            //   return <Text key={message.id}>{v.toolName}</Text>
+            case 'get_quote':
+              return <GetQuoteCard {...v} />
             default:
               return (
                 <Message
@@ -36,3 +36,5 @@ export default function Response(message: CustomMessage) {
     </>
   )
 }
+
+export default memo(Response)
