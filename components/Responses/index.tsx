@@ -14,8 +14,8 @@ export default function Response(message: CustomMessage) {
               return <GetBalanceCard {...v} />
             // case 'getTransactionHistory':
             //   return <GetTransactionHistory {...v} />
-            case 'get_quote':
-              return <Text key={message.id}>{v.toolName}</Text>
+            // case 'get_quote':
+            //   return <Text key={message.id}>{v.toolName}</Text>
             default:
               return (
                 <Message
