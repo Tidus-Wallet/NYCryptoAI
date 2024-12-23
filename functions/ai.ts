@@ -1,5 +1,6 @@
 import { createAnthropic } from '@ai-sdk/anthropic'
-import { convertToCoreMessages, generateText, type Message } from 'ai'
+import { createOpenAI } from '@ai-sdk/openai'
+import { convertToCoreMessages, generateText, tool, type Message } from 'ai'
 import { Connection, Keypair } from '@solana/web3.js'
 import base58 from 'bs58'
 import { getOnChainTools } from '@nycrypto/goat-adapter-vercel-ai'
@@ -9,13 +10,16 @@ import { jupiter } from '@nycrypto/goat-plugin-jupiter'
 import { coingecko } from '@nycrypto/goat-plugin-coingecko'
 import { yuna } from '@nycrypto/goat-plugin-yuna'
 import storage from 'utils/storage'
+import { z } from '@nycrypto/goat-core'
 
 export async function ask(messages: Message[]) {
   try {
     const solanaPrivateKey = storage.getString('solanaPrivateKey')
 
     if (!solanaPrivateKey) {
-      return 'Please set your Solana private key in the settings.'
+      return {
+        text: 'Please provide a Solana private key to continue.',
+      }
     }
 
     const connection = new Connection(process.env.EXPO_PUBLIC_SOLANA_RPC_URL as string)
@@ -43,9 +47,14 @@ export async function ask(messages: Message[]) {
     const anthropic = createAnthropic({
       apiKey: process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY,
     })
+    const openai = createOpenAI({
+      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    })
+
     const result = await generateText({
-      model: anthropic('claude-3-5-sonnet-latest'),
-      messages: convertToCoreMessages(messages.slice(-10, messages.length)),
+      // model: anthropic('claude-3-5-sonnet-latest'),
+      model: openai('gpt-4o'),
+      messages: convertToCoreMessages(messages),
       temperature: 0.4,
       system: `You are an AI assistant built by NYCrypto for a crypto wallet, capable of helping users manage their digital assets and perform on-chain transactions. You have access to blockchain data and can execute transactions through secure APIs. Your primary functions include checking balances, sending tokens, swapping tokens, and performing other blockchain operations.
 
@@ -134,8 +143,18 @@ export async function ask(messages: Message[]) {
       maxSteps: 10,
     })
 
-    return result.text
+    // tool names to watch for: get_balance, get_quote, getTransactionHistory
+    const toolResult = result.response.messages
+      .filter((v) => v.role === 'tool')
+      .at(-1)?.content
+
+    return {
+      text: result.text,
+      toolResult,
+    }
   } catch (e) {
-    return `An error occurred: ${e}`
+    return {
+      text: 'An error occurred. Please try again.',
+    }
   }
 }

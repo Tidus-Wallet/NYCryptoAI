@@ -1,23 +1,25 @@
 import { useState, useCallback, useEffect } from 'react'
-import type { Message } from 'ai'
+import type { Message, ToolContent } from 'ai'
 import { ask } from 'functions/ai'
 import QuickCrypto from 'react-native-quick-crypto'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import storage from 'utils/storage'
 
-interface UseChatResult {
-  messages: Message[]
-  error: Error | null
-  input: string
-  isLoading: boolean
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void
-  handleSubmit: (e?: React.FormEvent) => Promise<void>
-}
+export type CustomMessage = Message & { toolResults?: ToolContent }
 
-export function useChat(): UseChatResult {
-  const [messages, setMessages] = useMMKVStorage<Message[]>('messages', storage, [])
+// interface UseChatResult {
+//   messages: CustomMessage[]
+//   error: Error | null
+//   input: string
+//   isLoading: boolean
+//   handleInputChange: (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => void
+//   handleSubmit: (e?: React.FormEvent) => Promise<void>
+// }
+
+export function useChat() {
+  const [messages, setMessages] = useMMKVStorage<CustomMessage[]>('messages', storage, [])
   const [error, setError] = useState<Error | null>(null)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -54,10 +56,11 @@ export function useChat(): UseChatResult {
       try {
         const response = await ask([...messages, userMessage])
 
-        const assistantMessage: Message = {
+        const assistantMessage = {
           role: 'assistant',
-          content: response,
+          content: response.text,
           id: QuickCrypto.randomUUID(),
+          toolResults: response.toolResult,
         }
 
         setMessages((prevMessages) => [...prevMessages, assistantMessage])
@@ -77,5 +80,6 @@ export function useChat(): UseChatResult {
     isLoading,
     handleInputChange,
     handleSubmit,
+    setInput,
   }
 }
