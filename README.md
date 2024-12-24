@@ -37,4 +37,4 @@ In order to run the run the project follow these steps:
 
 ## Running the app (android)
 
-To run the app all you need to do is download the APK file [here](./app-apk.zip)
+To run the app all you need to do is download the APK file [here](https://expo.dev/artifacts/eas/cYc2TC7HCQZwEd82xqqjg5.apk)
