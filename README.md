@@ -24,7 +24,6 @@ NYCryptoAI right now only has a handful of features:
 - [ ] Liquidity position creation and closing through meteora
 - [ ] NFT portfolio fetching and display
 - [ ] Plain old wallet dashboard where these can be performed using a simple UI like [Tidus Wallet](https://tiduswallet.com)
-
 ## Running the project
 
 In order to run the run the project follow these steps:
@@ -37,4 +36,4 @@ In order to run the run the project follow these steps:
 
 ## Running the app (android)
 
-To run the app all you need to do is download the APK file [here](https://expo.dev/artifacts/eas/cYc2TC7HCQZwEd82xqqjg5.apk)
+To run the app all you need to do is download the APK file [here](https://expo.dev/artifacts/eas/b6VpwrK3Pjf7e9kpbKAQur.apk)
