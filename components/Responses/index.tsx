@@ -10,7 +10,6 @@ function Response(message: CustomMessage) {
     <>
       {message.toolResults ? (
         message.toolResults.map((v) => {
-          console.log(v.toolName)
           switch (v.toolName) {
             case 'get_balance':
               return <GetBalanceCard {...v} />

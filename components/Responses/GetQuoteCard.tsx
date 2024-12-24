@@ -1,7 +1,7 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { useQuery } from '@tanstack/react-query'
 import type { ToolResultPart } from 'ai'
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { getMint } from '@solana/spl-token'
 import { yunaAPIClient } from 'utils'
 import Decimal from 'decimal.js'
@@ -9,8 +9,8 @@ import { Button, H4, H6, Spinner, XStack, YStack } from 'tamagui'
 import { Text } from 'tamagui'
 import { useChat } from 'hooks/useChat'
 
-export default function GetQuoteCard(props: ToolResultPart) {
-  const { setInput, handleSubmit } = useChat()
+function GetQuoteCard(props: ToolResultPart) {
+  const { setIsLoading, handleSubmit } = useChat()
 
   const result = useMemo(() => {
     return props.result as {
@@ -78,6 +78,10 @@ export default function GetQuoteCard(props: ToolResultPart) {
     },
   })
 
+  async function submit(v: 'yes' | 'no') {
+    await handleSubmit(undefined, v)
+  }
+
   return (
     <YStack
       gap="$2"
@@ -90,7 +94,7 @@ export default function GetQuoteCard(props: ToolResultPart) {
       maxWidth={'80%'}
       alignSelf={'flex-start'}
     >
-      {quote.isFetching ? (
+      {quote.isLoading ? (
         <Spinner size="large" />
       ) : (
         <YStack gap="$2">
@@ -119,26 +123,20 @@ export default function GetQuoteCard(props: ToolResultPart) {
           </YStack>
 
           <YStack>
-            <Text>Double tap to confirm swap?</Text>
+            <Text>Confirm swap?</Text>
             <XStack gap={'$2'}>
               <Button
                 flex={1}
                 backgroundColor={'$blue10'}
                 color={'white'}
-                onPress={() => {
-                  setInput('Yes')
-                  handleSubmit()
-                }}
+                onPress={async () => await submit('yes')}
               >
                 Yes
               </Button>
               <Button
                 flex={1}
                 borderColor={'$blue6'}
-                onPress={() => {
-                  setInput('No')
-                  handleSubmit()
-                }}
+                onPress={async () => await submit('no')}
               >
                 No
               </Button>
@@ -149,3 +147,5 @@ export default function GetQuoteCard(props: ToolResultPart) {
     </YStack>
   )
 }
+
+export default memo(GetQuoteCard)

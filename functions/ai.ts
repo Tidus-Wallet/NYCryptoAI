@@ -25,16 +25,18 @@ export async function ask(messages: Message[]) {
     const connection = new Connection(process.env.EXPO_PUBLIC_SOLANA_RPC_URL as string)
     const keypair = Keypair.fromSecretKey(base58.decode(solanaPrivateKey))
 
+    const solanaWalletClient = solana({
+      keypair,
+      connection,
+      yunaAPIKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string,
+    })
+
     const tools = await getOnChainTools({
-      wallet: solana({
-        keypair,
-        connection,
-        yunaAPIKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string,
-      }),
+      wallet: solanaWalletClient,
       plugins: [
         sendSOL(),
-        splToken(),
-        jupiter(),
+        splToken({ walletClient: solanaWalletClient }),
+        jupiter({ walletClient: solanaWalletClient }),
         yuna({
           apiKey: process.env.EXPO_PUBLIC_YUNA_API_KEY as string,
         }),
@@ -54,7 +56,7 @@ export async function ask(messages: Message[]) {
     const result = await generateText({
       // model: anthropic('claude-3-5-sonnet-latest'),
       model: openai('gpt-4o'),
-      messages: convertToCoreMessages(messages),
+      messages: convertToCoreMessages(messages.slice(-15)),
       temperature: 0.4,
       system: `You are an AI assistant built by NYCrypto for a crypto wallet, capable of helping users manage their digital assets and perform on-chain transactions. You have access to blockchain data and can execute transactions through secure APIs. Your primary functions include checking balances, sending tokens, swapping tokens, and performing other blockchain operations.
 
@@ -154,7 +156,7 @@ export async function ask(messages: Message[]) {
     }
   } catch (e) {
     return {
-      text: 'An error occurred. Please try again.',
+      text: 'An error occurred. Please try again: ' + e.message,
     }
   }
 }

@@ -32,14 +32,14 @@ export function useChat() {
   )
 
   const handleSubmit = useCallback(
-    async (e?: React.FormEvent) => {
+    async (e?: React.FormEvent, v?: string) => {
       e?.preventDefault()
 
-      if (!input.trim() || isLoading) return
+      if ((!input.trim() && !v) || isLoading) return
 
       const userMessage: Message = {
         role: 'user',
-        content: input,
+        content: v ?? input,
         id: QuickCrypto.randomUUID(),
       }
 
@@ -81,5 +81,6 @@ export function useChat() {
     handleInputChange,
     handleSubmit,
     setInput,
+    setIsLoading,
   }
 }
